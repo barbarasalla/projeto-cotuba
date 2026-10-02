@@ -1,10 +1,5 @@
 package br.com.unipds;
 
-import java.nio.file.Path;
-import java.util.List;
-
-import nl.siegmann.epublib.domain.*;
-
 public class Main {
 
     void main(String[] args) {
@@ -18,28 +13,14 @@ public class Main {
         boolean modoVerboso = true;
         try {
             var leitorDeOpcoes = new ReadOptionsCLI();
-            leitorDeOpcoes.read(args);
+            CotubaParams cotubaParams = leitorDeOpcoes.read(args);
 
+            modoVerboso = cotubaParams.isModoVerboso();
 
-            Path diretorioDosMD = leitorDeOpcoes.getDiretorioDosMD();
-            String formato = leitorDeOpcoes.getFormato();
-            Path arquivoDeSaida = leitorDeOpcoes.getArquivoDeSaida();
-            modoVerboso = leitorDeOpcoes.isModoVerboso();
+            CotubaService cotubaService = new CotubaService();
+            cotubaService.execute(cotubaParams);
 
-            var rendererMK = new RendererMK();
-            List<String> capitulosEmHTML = rendererMK.render(diretorioDosMD);
-
-            if ("pdf".equals(formato)) {
-                var generatorPDF = new GeneratorPDF();
-                generatorPDF.generate(capitulosEmHTML, arquivoDeSaida);
-            } else if ("epub".equals(formato)) {
-                var generatorEPUB = new GenerateEPUB();
-                generatorEPUB.generate(capitulosEmHTML, arquivoDeSaida);
-            } else {
-                throw new IllegalArgumentException("Formato do ebook inválido: " + formato);
-            }
-
-            System.out.println("Arquivo gerado com sucesso: " + arquivoDeSaida);
+            System.out.println("Arquivo gerado com sucesso: " + cotubaParams.getArquivoDeSaida());
             return 0;
 
         } catch (Exception ex) {

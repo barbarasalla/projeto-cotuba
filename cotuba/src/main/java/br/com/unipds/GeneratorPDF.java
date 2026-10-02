@@ -17,16 +17,19 @@ import java.util.List;
 
 public class GeneratorPDF {
 
-    public void generate(List<String> htmls, Path outputFile) {
+    public void generate(Ebook ebook) {
+        List<Chapter> chapters = ebook.getChapters();
+        Path outputFile = ebook.getOutputFile();
+
         try (var writer = new PdfWriter(Files.newOutputStream(outputFile));
              var pdf = new PdfDocument(writer);
              var pdfDocument = new Document(pdf)) {
 
-            //TODO: definir título e autor para o livro
-            pdf.getDocumentInfo().setTitle("Livro");
-            pdf.getDocumentInfo().setAuthor("Autor");
+            pdf.getDocumentInfo().setTitle(ebook.getTitle());
+            pdf.getDocumentInfo().setAuthor(ebook.getAuthor());
 
-            htmls.forEach(html -> {
+            chapters.forEach(chapter -> {
+                String html = chapter.getContentHTML();
                 List<IElement> convertToElements = HtmlConverter.convertToElements(html);
 
                 if (pdf.getNumberOfPages() == 0) {
@@ -38,8 +41,8 @@ public class GeneratorPDF {
                     rootOutline = pdf.getOutlines(false);
                 }
 
-                // TODO: usar título do capítulo
-                PdfOutline chapterOutline = rootOutline.addOutline("Capítulo");
+                String chapterTitle = chapter.getTitle();
+                PdfOutline chapterOutline = rootOutline.addOutline(chapterTitle);
                 chapterOutline.addDestination(PdfExplicitDestination.createFit(pdf.getLastPage()));
 
                 for (IElement element : convertToElements) {

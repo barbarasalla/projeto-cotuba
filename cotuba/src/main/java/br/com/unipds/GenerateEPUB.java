@@ -14,34 +14,39 @@ import java.util.List;
 
 public class GenerateEPUB {
 
-    public void generate(List<String> htmls, Path outputFile) {
+    public void generate(Ebook ebook) {
+        List<Chapter> chapters = ebook.getChapters();
+        Path outputFile = ebook.getOutputFile();
+
         try {
             var epub = new Book();
 
-            //TODO: definir título e autor para o livro
-            epub.getMetadata().addTitle("Livro");
-            epub.getMetadata().addAuthor(new Author("Autor"));
+            epub.getMetadata().addTitle(ebook.getTitle());
+            epub.getMetadata().addAuthor(new Author(ebook.getAuthor()));
 
             boolean[] ehPrimeiroCapitulo = {true};
 
-            htmls.forEach(html -> {
-                //TODO: usar título do capítulo
+            chapters.forEach(chapter -> {
+                String contentHTML = chapter.getContentHTML();
+                String title = chapter.getTitle();
+
+
                 String epubHtml = """
                         <html xmlns="http://www.w3.org/1999/xhtml">
                         <head>
-                            <title>Capítulo</title>
+                            <title>%s</title>
                         </head>
                         <body>
                         %s
                         </body>
                         </html>
-                        """.formatted(html);
+                        """.formatted(title, contentHTML);
 
-                var chapter = new Resource(epubHtml.getBytes(), MediatypeService.XHTML);
-                epub.addSection("Capítulo", chapter);
+                var c = new Resource(epubHtml.getBytes(), MediatypeService.XHTML);
+                epub.addSection(title, c);
 
                 if (ehPrimeiroCapitulo[0]) {
-                    epub.getGuide().addReference(new GuideReference(chapter, "text", "Start Reading"));
+                    epub.getGuide().addReference(new GuideReference(c, "text", "Start Reading"));
                     ehPrimeiroCapitulo[0] = false;
                 }
             });

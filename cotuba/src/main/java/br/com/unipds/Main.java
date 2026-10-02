@@ -1,5 +1,8 @@
 package br.com.unipds;
 
+import jakarta.enterprise.inject.se.SeContainer;
+import jakarta.enterprise.inject.se.SeContainerInitializer;
+
 public class Main {
 
     void main(String[] args) {
@@ -11,13 +14,14 @@ public class Main {
 
     int executar(String[] args) {
         boolean modoVerboso = true;
-        try {
+
+        try(SeContainer container = SeContainerInitializer.newInstance().initialize()) { // Inicializa o CDI
             var leitorDeOpcoes = new ReadOptionsCLI();
             CotubaParams cotubaParams = leitorDeOpcoes.read(args);
 
             modoVerboso = cotubaParams.isModoVerboso();
 
-            CotubaService cotubaService = new CotubaService();
+            CotubaService cotubaService = container.select(CotubaService.class).get(); // Obtém a instância do CotubaService gerenciada pelo CDI
             cotubaService.execute(cotubaParams);
 
             System.out.println("Arquivo gerado com sucesso: " + cotubaParams.getArquivoDeSaida());

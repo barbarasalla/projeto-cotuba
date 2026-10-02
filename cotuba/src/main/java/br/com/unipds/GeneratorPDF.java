@@ -10,13 +10,18 @@ import com.itextpdf.layout.element.AreaBreak;
 import com.itextpdf.layout.element.IBlockElement;
 import com.itextpdf.layout.element.IElement;
 import com.itextpdf.layout.properties.AreaBreakType;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Named;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-public class GeneratorPDF {
+@ApplicationScoped
+@Named("GeradorPDF")
+public class GeneratorPDF implements GeneratorEbook {
 
+    @Override
     public void generate(Ebook ebook) {
         List<Chapter> chapters = ebook.getChapters();
         Path outputFile = ebook.getOutputFile();

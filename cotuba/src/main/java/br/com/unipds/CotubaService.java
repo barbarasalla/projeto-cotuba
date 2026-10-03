@@ -1,8 +1,9 @@
 package br.com.unipds;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
-import jakarta.inject.Named;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -13,16 +14,14 @@ public class CotubaService {
     private final RendererMK rendererMK;
     private final LeitorPropriedadesEbook leitorPropriedadesEbook;
     private final MarkdownRepository markdownRepository;
-    private final GeneratorEbook generatorPDF;
-    private final GeneratorEbook generatorEPUB;
+    private final Instance<GeneratorEbook> generatorEbooks; // Injeção de dependência para todos os beans que implementam GeneratorEbook
 
     @Inject
-    public CotubaService(RendererMK rendererMK, LeitorPropriedadesEbook leitorPropriedadesEbook, MarkdownRepository markdownRepository, @Named("GeradorPDF") GeneratorEbook generatorPDF, @Named("GeradorEPUB") GeneratorEbook generatorEPUB) {
+    public CotubaService(RendererMK rendererMK, LeitorPropriedadesEbook leitorPropriedadesEbook, MarkdownRepository markdownRepository, @Any Instance<GeneratorEbook> generatorEbooks) {
         this.rendererMK = rendererMK;
         this.leitorPropriedadesEbook = leitorPropriedadesEbook;
         this.markdownRepository = markdownRepository;
-        this.generatorPDF = generatorPDF;
-        this.generatorEPUB = generatorEPUB;
+        this.generatorEbooks = generatorEbooks;
     }
 
     public void execute(CotubaParams cotubaParams) {
@@ -39,14 +38,7 @@ public class CotubaService {
         ebook.setFormat(cotubaParams.getFormato());
         ebook.setOutputFile(cotubaParams.getArquivoDeSaida());
 
-        GeneratorEbook generatorEbook;
-        if (FormatEbookEnum.PDF.equals(ebook.getFormat())) {
-            generatorEbook = generatorPDF;
-        } else if (FormatEbookEnum.EPUB.equals(ebook.getFormat())) {
-            generatorEbook = generatorEPUB;
-        } else {
-            throw new IllegalArgumentException("Formato do ebook inválido: " + cotubaParams.getFormato());
-        }
+        GeneratorEbook generatorEbook = generatorEbooks.select(FormatEbookFilter.of(ebook.getFormat())).get(); // Seleciona o bean correto com base no formato do ebook
         generatorEbook.generate(ebook);
     }
 }

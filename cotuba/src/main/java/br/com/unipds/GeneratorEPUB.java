@@ -2,6 +2,7 @@ package br.com.unipds;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
+import jakarta.inject.Qualifier;
 import nl.siegmann.epublib.domain.Author;
 import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.domain.GuideReference;
@@ -15,7 +16,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 @ApplicationScoped
-@Named("GeradorEPUB")
+@FormatEbookQualifier(FormatEbookEnum.EPUB)
 public class GeneratorEPUB implements GeneratorEbook{
 
     @Override

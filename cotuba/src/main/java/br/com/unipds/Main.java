@@ -19,12 +19,12 @@ public class Main {
             var leitorDeOpcoes = new ReadOptionsCLI();
             CotubaParams cotubaParams = leitorDeOpcoes.read(args);
 
-            modoVerboso = cotubaParams.isModoVerboso();
+            modoVerboso = cotubaParams.modoVerboso();
 
             CotubaService cotubaService = container.select(CotubaService.class).get(); // Obtém a instância do CotubaService gerenciada pelo CDI
             cotubaService.execute(cotubaParams);
 
-            System.out.println("Arquivo gerado com sucesso: " + cotubaParams.getArquivoDeSaida());
+            System.out.println("Arquivo gerado com sucesso: " + cotubaParams.arquivoDeSaida());
             return 0;
 
         } catch (Exception ex) {

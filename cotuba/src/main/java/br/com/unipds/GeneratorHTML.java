@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class GeneratorHTML implements GeneratorEbook{
     @Override
     public void generate(Ebook ebook) {
-        Path outputDir = ebook.getOutputFile();
+        Path outputDir = ebook.outputFile();
         try {
             if(!Files.exists(outputDir)){
                 Path dirHTML = Files.createDirectory(outputDir);
@@ -23,7 +23,7 @@ public class GeneratorHTML implements GeneratorEbook{
 
             int chapterNumber = 1;
             Map<Chapter, Path> htmlChapterFiles = new LinkedHashMap<>();
-            for(Chapter chapter : ebook.getChapters()) {
+            for(Chapter chapter : ebook.chapters()) {
                 String nameFileHtml = getNameChapter(chapter, chapterNumber);
                 Path arquivoHtml = outputDir.resolve(nameFileHtml);
                 htmlChapterFiles.put(chapter, arquivoHtml);
@@ -40,7 +40,7 @@ public class GeneratorHTML implements GeneratorEbook{
 
     private void toWriteSummaryFile(Ebook ebook, Path outputDir, Map<Chapter, Path> htmlChapterFiles) {
 
-        String itensSummaryHtml = ebook.getChapters().stream().map(chapter -> {
+        String itensSummaryHtml = ebook.chapters().stream().map(chapter -> {
             return """
                     <li>
                         <a href="%s">%s</a>
@@ -65,7 +65,7 @@ public class GeneratorHTML implements GeneratorEbook{
                     </ul>
                 </body>
                 </html>
-                """.formatted(ebook.getTitle(), ebook.getTitle(), ebook.getAuthor(), itensSummaryHtml);
+                """.formatted(ebook.title(), ebook.title(), ebook.author(), itensSummaryHtml);
 
         Path index = outputDir.resolve("index.html");
         try {

@@ -4,5 +4,5 @@ import java.nio.file.Path;
 import java.util.List;
 
 public interface MarkdownRepository {
-    List<Chapter> search(Path inputDirMk);
+    List<Markdown> search(Path inputDirMk);
 }

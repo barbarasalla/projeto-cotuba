@@ -15,13 +15,14 @@ public class RendererMarkedownImpl implements RendererMK {
 
     // Retorn a list of html strings, each representing a chapter converted from markdown to html
     @Override
-    public void render(List<Chapter> chapterList) {
-
-        chapterList.forEach(chapter -> {
+    public List<Chapter> render(List<Markdown> chapterList) {
+        return chapterList.stream().map(mk -> {
+            Chapter chapter = new Chapter();
+            chapter.setMarkdown(mk);
             Parser parser = Parser.builder().build();
-            Node document = null;
+            Node document;
             try {
-                String markdown = chapter.getContentMarkdown(); // Lê o conteúdo do arquivo .md
+                String markdown = mk.contentMarkdown(); // Lê o conteúdo do arquivo .md
                 document = parser.parse(markdown); // Faz o parse do conteúdo Markdown para um documento Node
                 document.accept(new AbstractVisitor() {
                     @Override
@@ -40,15 +41,16 @@ public class RendererMarkedownImpl implements RendererMK {
 
                 });
             } catch (Exception ex) {
-                throw new IllegalStateException("Erro ao fazer parse do arquivo " + chapter.getArchivePath(), ex);
+                throw new IllegalStateException("Erro ao fazer parse do arquivo " + mk.archivePath(), ex);
             }
 
             try {
                 HtmlRenderer renderer = HtmlRenderer.builder().build();
                 chapter.setContentHTML(renderer.render(document));
             } catch (Exception ex) {
-                throw new IllegalStateException("Erro ao renderizar para HTML o arquivo " + chapter.getArchivePath(), ex);
+                throw new IllegalStateException("Erro ao renderizar para HTML o arquivo " + mk.archivePath(), ex);
             }
-        });
+            return chapter;
+        }).toList();
     }
 }

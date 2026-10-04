@@ -26,19 +26,21 @@ public class CotubaService {
 
     public void execute(CotubaParams cotubaParams) {
 
-        Path diretorioDosMD = cotubaParams.getDiretorioDosMD();
-        List<Chapter> capitulos = markdownRepository.search(diretorioDosMD);
-        rendererMK.render(capitulos);
+        Path diretorioDosMD = cotubaParams.diretorioDosMD();
+        List<Markdown> markdowns = markdownRepository.search(diretorioDosMD);
+        List<Chapter> capitulos = rendererMK.render(markdowns);
 
-        Ebook ebook = new Ebook();
+        PropertiesEbook propertiesEbook = leitorPropriedadesEbook.ler(cotubaParams.diretorioDosMD());
 
-        leitorPropriedadesEbook.ler(cotubaParams.getDiretorioDosMD(), ebook);
+        Ebook ebook = new Ebook(
+                propertiesEbook.title(),
+                propertiesEbook.author(),
+                cotubaParams.formato(),
+                capitulos,
+                cotubaParams.arquivoDeSaida()
+        );
 
-        ebook.setChapters(capitulos);
-        ebook.setFormat(cotubaParams.getFormato());
-        ebook.setOutputFile(cotubaParams.getArquivoDeSaida());
-
-        GeneratorEbook generatorEbook = generatorEbooks.select(FormatEbookFilter.of(ebook.getFormat())).get(); // Seleciona o bean correto com base no formato do ebook
+        GeneratorEbook generatorEbook = generatorEbooks.select(FormatEbookFilter.of(ebook.format())).get(); // Seleciona o bean correto com base no formato do ebook
         generatorEbook.generate(ebook);
     }
 }

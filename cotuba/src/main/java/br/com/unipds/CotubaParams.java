@@ -2,42 +2,24 @@ package br.com.unipds;
 
 import java.nio.file.Path;
 
-public class CotubaParams {
+public record CotubaParams (
+     Path diretorioDosMD,
+     FormatEbookEnum formato,
+     Path arquivoDeSaida,
+     boolean modoVerboso){
 
-    private Path diretorioDosMD;
-    private FormatEbookEnum formato;
-    private Path arquivoDeSaida;
-    private boolean modoVerboso = false;
-
-    public Path getDiretorioDosMD() {
-        return diretorioDosMD;
-    }
-
-    public void setDiretorioDosMD(Path diretorioDosMD) {
-        this.diretorioDosMD = diretorioDosMD;
-    }
-
-    public FormatEbookEnum getFormato() {
-        return formato;
-    }
-
-    public void setFormato(FormatEbookEnum formato) {
-        this.formato = formato;
-    }
-
-    public Path getArquivoDeSaida() {
-        return arquivoDeSaida;
-    }
-
-    public void setArquivoDeSaida(Path arquivoDeSaida) {
-        this.arquivoDeSaida = arquivoDeSaida;
-    }
-
-    public boolean isModoVerboso() {
-        return modoVerboso;
-    }
-
-    public void setModoVerboso(boolean modoVerboso) {
-        this.modoVerboso = modoVerboso;
+    public CotubaParams (Path diretorioDosMD,
+                         FormatEbookEnum formato,
+                         Path arquivoDeSaida){
+        if (diretorioDosMD == null) {
+            throw new IllegalArgumentException("O diretório dos arquivos Markdown não pode ser nulo.");
+        }
+        if (formato == null) {
+            throw new IllegalArgumentException("O formato do ebook não pode ser nulo.");
+        }
+        if (arquivoDeSaida == null) {
+            throw new IllegalArgumentException("O arquivo de saída não pode ser nulo.");
+        }
+        this(diretorioDosMD, formato, arquivoDeSaida, false);
     }
 }

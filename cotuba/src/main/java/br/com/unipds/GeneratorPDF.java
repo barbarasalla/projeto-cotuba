@@ -22,15 +22,15 @@ public class GeneratorPDF implements GeneratorEbook {
 
     @Override
     public void generate(Ebook ebook) {
-        List<Chapter> chapters = ebook.getChapters();
-        Path outputFile = ebook.getOutputFile();
+        List<Chapter> chapters = ebook.chapters();
+        Path outputFile = ebook.outputFile();
 
         try (var writer = new PdfWriter(Files.newOutputStream(outputFile));
              var pdf = new PdfDocument(writer);
              var pdfDocument = new Document(pdf)) {
 
-            pdf.getDocumentInfo().setTitle(ebook.getTitle());
-            pdf.getDocumentInfo().setAuthor(ebook.getAuthor());
+            pdf.getDocumentInfo().setTitle(ebook.title());
+            pdf.getDocumentInfo().setAuthor(ebook.author());
 
             chapters.forEach(chapter -> {
                 String html = chapter.getContentHTML();

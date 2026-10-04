@@ -1,8 +1,6 @@
 package br.com.unipds;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Named;
-import jakarta.inject.Qualifier;
 import nl.siegmann.epublib.domain.Author;
 import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.domain.GuideReference;
@@ -21,14 +19,14 @@ public class GeneratorEPUB implements GeneratorEbook{
 
     @Override
     public void generate(Ebook ebook) {
-        List<Chapter> chapters = ebook.getChapters();
-        Path outputFile = ebook.getOutputFile();
+        List<Chapter> chapters = ebook.chapters();
+        Path outputFile = ebook.outputFile();
 
         try {
             var epub = new Book();
 
-            epub.getMetadata().addTitle(ebook.getTitle());
-            epub.getMetadata().addAuthor(new Author(ebook.getAuthor()));
+            epub.getMetadata().addTitle(ebook.title());
+            epub.getMetadata().addAuthor(new Author(ebook.author()));
 
             boolean[] ehPrimeiroCapitulo = {true};
 

@@ -1,12 +1,9 @@
 package br.com.unipds;
 
-import java.nio.file.Path;
-
 public class Chapter {
     private String title;
-    private String contentMarkdown;
     private String contentHTML;
-    private Path archivePath;
+    private Markdown markdown;
 
     public String getTitle() {
         return title;
@@ -14,14 +11,6 @@ public class Chapter {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getContentMarkdown() {
-        return contentMarkdown;
-    }
-
-    public void setContentMarkdown(String contentMarkdown) {
-        this.contentMarkdown = contentMarkdown;
     }
 
     public String getContentHTML() {
@@ -32,11 +21,11 @@ public class Chapter {
         this.contentHTML = contentHTML;
     }
 
-    public Path getArchivePath() {
-        return archivePath;
+    public Markdown getMarkdown() {
+        return markdown;
     }
 
-    public void setArchivePath(Path archivePath) {
-        this.archivePath = archivePath;
+    public void setMarkdown(Markdown markdown) {
+        this.markdown = markdown;
     }
 }

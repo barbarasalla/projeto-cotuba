@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 @ApplicationScoped
 public class MarkdownRepositoryImpl implements MarkdownRepository {
 
-    public List<Chapter> search(Path inputDirMk) {
+    public List<Markdown> search(Path inputDirMk) {
         PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:**/*.md");
         try (Stream<Path> streamMDs = Files.list(inputDirMk)) {
             List<Path> arquivosMD = streamMDs
@@ -28,14 +28,8 @@ public class MarkdownRepositoryImpl implements MarkdownRepository {
             return arquivosMD.stream().map(
                     arquivoMD -> {
                         try {
-                            Chapter chapter = new Chapter();
-                            chapter.setArchivePath(arquivoMD);
-
-                            String markdown = null;
-
-                            markdown = Files.readString(arquivoMD);
-                            chapter.setContentMarkdown(markdown);
-                            return chapter;
+                            String markdownContent = Files.readString(arquivoMD);
+                            return new Markdown(arquivoMD, markdownContent);
                         } catch (IOException e) {
                             throw new IllegalStateException("Erro ao ler o arquivo .md: " + arquivoMD, e);
                         }

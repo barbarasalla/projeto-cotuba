@@ -14,7 +14,7 @@ import java.util.Properties;
 public class LeitorPropriedadesEbookImpl implements LeitorPropriedadesEbook {
 
     @Override
-    public void ler(Path dirMD, Ebook ebook){
+    public PropertiesEbook ler(Path dirMD){
 
         Path resolve = dirMD.resolve("ebook.properties"); // Caminho completo para o arquivo ebook.properties
 
@@ -41,8 +41,6 @@ public class LeitorPropriedadesEbookImpl implements LeitorPropriedadesEbook {
             throw new IllegalStateException("Propriedade cotuba.ebook.autor não encontrada no arquivo ebook.properties");
         }
 
-        ebook.setTitle(titulo);
-        ebook.setAuthor(author);
-
+        return new PropertiesEbook(titulo, author);
     }
 }

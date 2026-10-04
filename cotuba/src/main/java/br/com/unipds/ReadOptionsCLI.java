@@ -47,8 +47,6 @@ public class ReadOptionsCLI {
             Path arquivoDeSaida;
             boolean modoVerboso = true;
 
-            CotubaParams cotubaParams = new CotubaParams();
-
             String nomeDoDiretorioDosMD = cmd.getOptionValue("dir");
 
             if (nomeDoDiretorioDosMD != null) {
@@ -89,12 +87,7 @@ public class ReadOptionsCLI {
 
             modoVerboso = cmd.hasOption("verbose");
 
-            cotubaParams.setDiretorioDosMD(diretorioDosMD);
-            cotubaParams.setFormato(formato);
-            cotubaParams.setArquivoDeSaida(arquivoDeSaida);
-            cotubaParams.setModoVerboso(modoVerboso);
-
-            return cotubaParams;
+            return new CotubaParams(diretorioDosMD, formato, arquivoDeSaida, modoVerboso);
         } catch (Exception e) {
             System.err.println(e.getMessage());
             throw new IllegalStateException(e);
